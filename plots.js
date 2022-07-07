@@ -131,4 +131,40 @@ function updatePlotly() {
   Plotly.restyle("plot", trace);
 };
 
+function init() {
+  var selector = d3.select("#selDataset");
+
+  d3.json("samples.json").then((data) => {
+    console.log(data);
+    var sampleNames = data.names;
+    sampleNames.forEach((sample) => {
+      selector
+        .append("option")
+        .text(sample)
+        .property("value", sample);
+    });
+})}
+
 init();
+
+function buildMetadata(sample) {
+  d3.json("samples.json").then(function(data){
+    var metadata = data.metadata;
+    console.log(data)
+    firstPerson = data.metadata[0];
+    Object.entries(firstPerson).forEach(([key, value]) =>
+      {console.log(key + ': ' + value);});
+    var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
+    var result = resultArray[0];
+    var PANEL = d3.select("#sample-metadata");
+
+    PANEL.html("");
+    PANEL.append("h6").text(result.location);
+  });
+}
+
+function optionChanged(newSample) {
+  //console.log(newSample);
+  buildMetadata(newSample);
+  //buildCharts(newSample);
+}
